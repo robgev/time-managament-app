@@ -1,3 +1,6 @@
+// TODO: Create and handle refreshTokens
+// TODO: Use controllers to keep the routes clean
+
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -20,7 +23,17 @@ router.post('/login', async (req, res) => {
     try {
       const passwordsMatch = await bcrypt.compare(password, user.password);
       if (passwordsMatch) {
-        res.send('Successfully logged in');
+        // Logged in successfully, need to issue a token
+        const sessionInfo = { username, role: 0 };
+        const accessToken = jwt.sign(
+          sessionInfo,
+          process.env.JWT_SECRET,
+          {
+            expiresIn: process.env.JWT_ACCESS_TOKEN_LIFE,
+          },
+        );
+
+        res.json({ response: 'Logged in successfully', accessToken });
       } else {
         res.status(400).send({ response: 'Invalid password' });
       }
