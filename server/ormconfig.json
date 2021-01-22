@@ -4,7 +4,7 @@
    "port": 5432,
    "username": "postgres",
    "password": "Yurnero!1",
-   "database": "postgres",
+   "database": "robert_gevorgyan",
    "synchronize": true,
    "logging": false,
    "entities": [
