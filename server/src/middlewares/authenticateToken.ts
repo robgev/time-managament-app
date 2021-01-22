@@ -1,6 +1,8 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
+import { Response } from 'express';
+import { RequestWithUser } from '../types/request.d';
 
-const authenticateToken = (req, res, next) => {
+export default (req: RequestWithUser, res: Response, next: Function) => {
   const authHeader = req.get('authorization');
   if (authHeader) {
     const token = authHeader.split(' ')[1]; // Bearer <access_token>
@@ -20,5 +22,3 @@ const authenticateToken = (req, res, next) => {
     res.sendStatus(401);
   }
 };
-
-module.exports = authenticateToken;

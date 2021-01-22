@@ -1,22 +1,27 @@
 // TODO: Create and handle refreshTokens
 // TODO: Use controllers to keep the routes clean
 
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+import express, { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import { getManager } from 'typeorm';
+
+import { User } from '../entity/User';
 
 const router = express.Router();
 
-const users = [];
-
-router.get('/', (req, res) => {
-  res.json(users);
+router.get('/', async (req: Request, res: Response) => {
+  const userRepository = getManager().getRepository(User);
+  const allUsers = await userRepository.find();
+  res.json(allUsers);
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: Request, res: Response) => {
   // Authenticate the user
   const { username, password } = req.body;
-  const user = users.find((u) => u.username === username);
+  const userRepository = getManager().getRepository(User);
+  const user = await userRepository.findOne({ username });
+  console.log(user);
   if (!user) {
     res.status(400).send({ response: 'Invalid username' });
   } else {
@@ -24,7 +29,7 @@ router.post('/login', async (req, res) => {
       const passwordsMatch = await bcrypt.compare(password, user.password);
       if (passwordsMatch) {
         // Logged in successfully, need to issue a token
-        const sessionInfo = { username, role: 0 };
+        const sessionInfo = { id: user.id, username, role: user.role };
         const accessToken = jwt.sign(
           sessionInfo,
           process.env.JWT_SECRET,
@@ -44,20 +49,22 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
     // 10 is the number of rounds for salt;
     const passwordHash = await bcrypt.hash(password, 10);
+    // Get the TypeORM user repo and create a new User obj
+    const userRepository = getManager().getRepository(User);
+    const user = userRepository.create({ username, password: passwordHash });
+    await userRepository.save(user);
 
-    const user = { username, password: passwordHash };
-    users.push(user);
-    res.status(201).send();
+    res.status(201).send(user);
   } catch (err) {
     console.error(err);
     res.status(500).send({ response: 'Something went wrong when trying to sign up' });
   }
 });
 
-module.exports = router;
+export default router;
