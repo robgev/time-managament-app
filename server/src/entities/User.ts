@@ -5,12 +5,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Task } from './Task';
-
-export enum UserRole {
-  ADMIN = 2,
-  MANAGER = 1,
-  USER = 0,
-}
+import { UserRole } from '../types/User.d';
 
 @Entity()
 export class User {

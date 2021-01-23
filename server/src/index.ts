@@ -7,7 +7,7 @@ import cors from 'cors';
 import logger from 'morgan';
 
 import usersRouter from './routes/users';
-import apiRouter from './routes/api';
+import taskRouter from './routes/tasks';
 import authRouter from './routes/auth';
 
 dotenv.config();
@@ -25,7 +25,7 @@ createConnection().then(async (connection) => {
     .use(express.json())
     .use(express.urlencoded({ extended: false }))
     .use('/users', usersRouter)
-    .use('/api', apiRouter)
+    .use('/tasks', taskRouter)
     .use('/auth', authRouter);
 
   // run app

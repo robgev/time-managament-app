@@ -2,7 +2,9 @@ import {
   Entity,
   Column,
   ManyToOne,
+  RelationId,
   PrimaryGeneratedColumn,
+  JoinColumn,
 } from 'typeorm';
 import { User } from './User';
 
@@ -24,5 +26,9 @@ export class Task {
     duration: number;
 
     @ManyToOne(() => User, (user) => user.tasks)
+    @JoinColumn({ name: 'byUserId' })
     byUser: User;
+
+    @RelationId((task: Task) => task.byUser)
+    byUserId: number;
 }

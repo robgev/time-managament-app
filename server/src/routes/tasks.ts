@@ -1,14 +1,14 @@
-import express, { Response } from 'express';
+import express, { Response, Request } from 'express';
 import { getManager } from 'typeorm';
-import { Task } from '../entity/Task';
-import { UserRole } from '../entity/User';
-import { RequestWithUser } from '../types/request.d';
+import { Task } from '../entities/Task';
+import { UserRole } from '../types/User.d';
 import authenticateToken from '../middlewares/authenticateToken';
 
 const router = express.Router();
 
-router.post('/createEntry', authenticateToken, async (req: RequestWithUser, res: Response) => {
-  const { body: taskData, user } = req;
+router.post('/create', authenticateToken, async (req: Request, res: Response) => {
+  const { body: taskData } = req;
+  const { user } = res.locals;
   if (user.id === taskData.byUser || user.role === UserRole.ADMIN) {
     const taskRepository = getManager().getRepository(Task);
     const task = taskRepository.create(taskData);
@@ -19,8 +19,9 @@ router.post('/createEntry', authenticateToken, async (req: RequestWithUser, res:
   }
 });
 
-router.patch('/editEntry/:id', authenticateToken, async (req: RequestWithUser, res: Response) => {
-  const { params: { id }, body: updatedTask, user } = req;
+router.patch('/edit/:id', authenticateToken, async (req: Request, res: Response) => {
+  const { params: { id }, body: updatedTask } = req;
+  const { user } = res.locals;
   const taskRepository = getManager().getRepository(Task);
   const task = await taskRepository.findOne(id, { relations: ['byUser'] });
   if (task.byUser.id === user.id || user.role === UserRole.ADMIN) {
@@ -31,8 +32,9 @@ router.patch('/editEntry/:id', authenticateToken, async (req: RequestWithUser, r
   }
 });
 
-router.delete('/deleteEntry/:id', authenticateToken, async (req: RequestWithUser, res: Response) => {
-  const { params: { id }, user } = req;
+router.delete('/delete/:id', authenticateToken, async (req: Request, res: Response) => {
+  const { params: { id } } = req;
+  const { user } = res.locals;
   const taskRepository = getManager().getRepository(Task);
   const task = await taskRepository.findOne(id, { relations: ['byUser'] });
   if (task.byUser.id === user.id || user.role === UserRole.ADMIN) {
@@ -43,12 +45,12 @@ router.delete('/deleteEntry/:id', authenticateToken, async (req: RequestWithUser
   }
 });
 
-router.get('/entries', authenticateToken, async (req: RequestWithUser, res: Response) => {
+router.get('/', authenticateToken, async (req: Request, res: Response) => {
   const taskRepository = getManager().getRepository(Task);
   const tasks = await taskRepository.find({
     relations: ['byUser'],
     where: {
-      byUser: { id: req.user.id },
+      byUser: { id: res.locals.user.id },
       // workedWhen: Between('2020-01-19T07:20:38.303Z', '2021-01-21T07:20:38.303Z'),
     },
   });
