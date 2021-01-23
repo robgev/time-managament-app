@@ -1,7 +1,6 @@
 import express, { Response, Request } from 'express';
-import { getManager } from 'typeorm';
-import { Task } from '../entities/Task';
-import { UserRole } from '../types/User.d';
+import { UserRole } from '../entities/User';
+import * as TaskController from '../controllers/Task';
 import authenticateToken from '../middlewares/authenticateToken';
 
 const router = express.Router();
@@ -10,9 +9,7 @@ router.post('/create', authenticateToken, async (req: Request, res: Response) =>
   const { body: taskData } = req;
   const { user } = res.locals;
   if (user.id === taskData.byUser || user.role === UserRole.ADMIN) {
-    const taskRepository = getManager().getRepository(Task);
-    const task = taskRepository.create(taskData);
-    await taskRepository.save(task);
+    const task = await TaskController.create(taskData);
     res.json(task);
   } else {
     res.sendStatus(403);
@@ -20,12 +17,12 @@ router.post('/create', authenticateToken, async (req: Request, res: Response) =>
 });
 
 router.patch('/edit/:id', authenticateToken, async (req: Request, res: Response) => {
-  const { params: { id }, body: updatedTask } = req;
+  const { body: updatedTask } = req;
+  const id = parseInt(req.params.id, 10);
   const { user } = res.locals;
-  const taskRepository = getManager().getRepository(Task);
-  const task = await taskRepository.findOne(id, { relations: ['byUser'] });
-  if (task.byUser.id === user.id || user.role === UserRole.ADMIN) {
-    await taskRepository.update(id, updatedTask);
+  const task = await TaskController.getTaskById(id);
+  if (task.byUserId === user.id || user.role === UserRole.ADMIN) {
+    await TaskController.edit(id, updatedTask);
     res.json({ response: 'Updated successfully' });
   } else {
     res.sendStatus(403);
@@ -33,12 +30,11 @@ router.patch('/edit/:id', authenticateToken, async (req: Request, res: Response)
 });
 
 router.delete('/delete/:id', authenticateToken, async (req: Request, res: Response) => {
-  const { params: { id } } = req;
+  const id = parseInt(req.params.id, 10);
   const { user } = res.locals;
-  const taskRepository = getManager().getRepository(Task);
-  const task = await taskRepository.findOne(id, { relations: ['byUser'] });
-  if (task.byUser.id === user.id || user.role === UserRole.ADMIN) {
-    await taskRepository.delete(id);
+  const task = await TaskController.getTaskById(id);
+  if (task.byUserId === user.id || user.role === UserRole.ADMIN) {
+    await TaskController.remove(id);
     res.json({ response: 'Deleted successfully' });
   } else {
     res.sendStatus(403);
@@ -46,14 +42,7 @@ router.delete('/delete/:id', authenticateToken, async (req: Request, res: Respon
 });
 
 router.get('/', authenticateToken, async (req: Request, res: Response) => {
-  const taskRepository = getManager().getRepository(Task);
-  const tasks = await taskRepository.find({
-    relations: ['byUser'],
-    where: {
-      byUser: { id: res.locals.user.id },
-      // workedWhen: Between('2020-01-19T07:20:38.303Z', '2021-01-21T07:20:38.303Z'),
-    },
-  });
+  const tasks = await TaskController.getAllByUserId(res.locals.user.id);
   res.json(tasks);
 });
 

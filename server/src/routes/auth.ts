@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import { getManager } from 'typeorm';
 
 import { User } from '../entities/User';
+import * as UserController from '../controllers/User';
 
 const router = express.Router();
 
@@ -45,14 +46,7 @@ router.post('/login', async (req: Request, res: Response) => {
 router.post('/register', async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
-
-    // 10 is the number of rounds for salt;
-    const passwordHash = await bcrypt.hash(password, 10);
-    // Get the TypeORM user repo and create a new User obj
-    const userRepository = getManager().getRepository(User);
-    const user = userRepository.create({ username, password: passwordHash });
-    await userRepository.save(user);
-
+    const user = UserController.create({ username, password });
     res.status(201).send(user);
   } catch (err) {
     console.error(err);
