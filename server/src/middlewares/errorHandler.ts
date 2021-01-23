@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { SyntheticError } from '../types/SyntheticError';
+import { SyntheticError } from '../utils/types/SyntheticError';
 
 // Wont use next, error handler will come the last
 export default (err: SyntheticError, req: Request, res: Response) => {

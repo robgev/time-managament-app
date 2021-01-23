@@ -1,6 +1,6 @@
 import { getManager } from 'typeorm';
 import { Task } from '../entities/Task';
-import { ITask } from '../types/Task.d';
+import { ITask } from '../utils/types/Task';
 
 export const getTaskById = async (id: number) => {
   const TaskRepo = getManager().getRepository(Task);
@@ -16,16 +16,19 @@ export const create = async (taskData: ITask) => {
 };
 
 export const edit = async (id: number, taskData: Partial<ITask>) => {
+  // TODO: Handle invalid ids
   const TaskRepo = getManager().getRepository(Task);
   await TaskRepo.update(id, taskData);
 };
 
 export const remove = async (id: number) => {
+  // TODO: Handle invalid ids
   const TaskRepo = getManager().getRepository(Task);
   await TaskRepo.delete(id);
 };
 
 export const getAllByUserId = async (id: number) => {
+  // TODO: Handle invalid ids
   const TaskRepo = getManager().getRepository(Task);
   const tasks = await TaskRepo.find({
     relations: ['byUser'],

@@ -1,5 +1,5 @@
-import { ITask } from './Task.d';
-import { UserRole } from '../entities/User';
+import { ITask } from './Task';
+import { UserRole } from '../../entities/User';
 
 export interface IUser {
     id: number;

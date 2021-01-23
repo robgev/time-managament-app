@@ -9,6 +9,7 @@ import logger from 'morgan';
 import usersRouter from './routes/users';
 import taskRouter from './routes/tasks';
 import authRouter from './routes/auth';
+import errorHandler from './middlewares/errorHandler';
 
 dotenv.config();
 
@@ -26,7 +27,8 @@ createConnection().then(async (connection) => {
     .use(express.urlencoded({ extended: false }))
     .use('/users', usersRouter)
     .use('/tasks', taskRouter)
-    .use('/auth', authRouter);
+    .use('/auth', authRouter)
+    .use(errorHandler);
 
   // run app
   app.listen(8080, () => console.warn('App is running on port 8080'));

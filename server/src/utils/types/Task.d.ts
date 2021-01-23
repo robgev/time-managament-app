@@ -1,4 +1,4 @@
-import { IUser } from './User.d';
+import { IUser } from './User';
 
 export interface ITask {
   id: number,
