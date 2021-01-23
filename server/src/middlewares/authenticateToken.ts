@@ -1,8 +1,7 @@
 import jwt from 'jsonwebtoken';
-import { Response } from 'express';
-import { RequestWithUser } from '../types/request.d';
+import { Request, Response } from 'express';
 
-export default (req: RequestWithUser, res: Response, next: Function) => {
+export default (req: Request, res: Response, next: Function) => {
   const authHeader = req.get('authorization');
   if (authHeader) {
     const token = authHeader.split(' ')[1]; // Bearer <access_token>
@@ -11,7 +10,7 @@ export default (req: RequestWithUser, res: Response, next: Function) => {
         if (err) {
           res.sendStatus(403);
         } else {
-          req.user = user;
+          res.locals.user = user;
           next();
         }
       });

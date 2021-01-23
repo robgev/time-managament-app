@@ -6,22 +6,15 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { getManager } from 'typeorm';
 
-import { User } from '../entity/User';
+import { User } from '../entities/User';
 
 const router = express.Router();
-
-router.get('/', async (req: Request, res: Response) => {
-  const userRepository = getManager().getRepository(User);
-  const allUsers = await userRepository.find();
-  res.json(allUsers);
-});
 
 router.post('/login', async (req: Request, res: Response) => {
   // Authenticate the user
   const { username, password } = req.body;
   const userRepository = getManager().getRepository(User);
   const user = await userRepository.findOne({ username });
-  console.log(user);
   if (!user) {
     res.status(400).send({ response: 'Invalid username' });
   } else {
