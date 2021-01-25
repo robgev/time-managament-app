@@ -13,7 +13,7 @@ router.get('/', authenticateToken, isUserManager, async (req: Request, res: Resp
 router.post('/create', authenticateToken, isUserManager, async (req: Request, res: Response) => {
   const { body: credentials } = req;
   const userData = await UserController.create(credentials);
-  res.send(201).json(userData);
+  res.status(201).json(userData);
 });
 
 router.patch('/edit/:id', authenticateToken, isUserManager, async (req: Request, res: Response) => {
