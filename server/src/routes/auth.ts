@@ -10,13 +10,13 @@ const router = express.Router();
 router.post('/login', async (req: Request, res: Response) => {
   const { username, password } = req.body;
   const user = await UserController.getUserByUsername(username);
-  const accessToken = AuthController.login(password, user);
+  const accessToken = await AuthController.login(password, user);
   res.json({ response: 'Logged in successfully', accessToken });
 });
 
 router.post('/register', async (req: Request, res: Response) => {
   const { username, password } = req.body;
-  const user = UserController.create({ username, password });
+  const user = await UserController.create({ username, password });
   res.status(201).send(user);
 });
 

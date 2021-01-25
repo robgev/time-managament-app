@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { SyntheticError } from '../utils/types/SyntheticError';
 
-// Wont use next, error handler will come the last
-export default (err: SyntheticError, req: Request, res: Response) => {
+// We need to specify the next for express middleware
+// It will come last anyways but still
+export default (err: SyntheticError, req: Request, res: Response, next: NextFunction) => {
   if (err.message) {
     const { message, errors, code } = err;
     res
@@ -21,4 +22,5 @@ export default (err: SyntheticError, req: Request, res: Response) => {
       error: err,
     });
   }
+  next();
 };

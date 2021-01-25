@@ -21,7 +21,8 @@ export const issueToken = (sessionInfo: { id: number, role: UserRole }) => {
 };
 
 export const login = async (password: string, user: IUser) => {
-  if (comparePasswords(password, user.password)) {
+  const isCorrectPass = await comparePasswords(password, user.password);
+  if (isCorrectPass) {
     const sessionInfo = { id: user.id, role: user.role };
     return issueToken(sessionInfo);
   }
