@@ -16,6 +16,7 @@ dotenv.config();
 // create connection with database
 // note that it's not active database connection
 // TypeORM creates connection pools and uses them for your requests
+// eslint-disable-next-line
 createConnection().then(async (connection) => {
   // create express app
   const app = express();
