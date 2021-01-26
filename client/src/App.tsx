@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {
+  Route,
+  Switch,
+  BrowserRouter as Router,
+} from 'react-router-dom';
+import ThemeProvider from '@material-ui/styles/ThemeProvider';
+
+import Login from 'pages/Login';
+import Signup from 'pages/Signup';
+import theme from 'utils/theme';
+
 
 const App = () => {
-  const [response, setResponse] = useState(null);
-
-  useEffect(() => {
-    fetch("http://localhost:8080/api")
-      .then(res => res.json())
-      .then(({ response }) => setResponse(response))
-  })
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{response}</p>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Switch>
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Signup} />
+          <Route path="/" component={Login} />
+        </Switch>
+      </Router>
+    </ThemeProvider>
   );
 }
 
