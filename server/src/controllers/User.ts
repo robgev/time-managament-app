@@ -5,14 +5,25 @@ import { IUser } from '../utils/types/User';
 import { BadRequest } from '../utils/errors/BadRequest';
 
 export const create = async (
-  { username, password }: { username: string, password: string },
+  {
+    username,
+    password,
+    firstName,
+    lastName,
+  }:
+  Record<string, string>,
 ) => {
   // TODO: Handle the case when the username already exists
   const UserRepo = getManager().getRepository(User);
   // 10 is the number of rounds for salt;
   const passwordHash = await bcrypt.hash(password, 10);
   // Get the TypeORM user repo and create a new User obj
-  const user = UserRepo.create({ username, password: passwordHash });
+  const user = UserRepo.create({
+    username,
+    password: passwordHash,
+    firstName,
+    lastName,
+  });
   await UserRepo.save(user);
   return user;
 };

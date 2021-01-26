@@ -15,8 +15,15 @@ router.post('/login', async (req: Request, res: Response) => {
 });
 
 router.post('/register', async (req: Request, res: Response) => {
-  const { username, password } = req.body;
-  const user = await UserController.create({ username, password });
+  const {
+    username,
+    password,
+    firstName,
+    lastName,
+  } = req.body;
+  const user = await UserController.create({
+    username, password, firstName, lastName,
+  });
   res.status(201).send(user);
 });
 
