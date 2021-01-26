@@ -1,12 +1,15 @@
 import React, { ChangeEvent, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import { useLocation, useHistory } from 'react-router-dom'
 
 import TextField from 'components/TextField';
 import Button from 'components/Button';
 import Layout from 'components/Layout';
 import Link from 'components/Link';
-import { register } from 'api/Auth';
+import { IAuthLocationState } from 'components/AuthorizedRoute/types';
+import { register, login } from 'api/Auth';
+import * as TokenManager from 'utils/token';
 
 import useStyles from './styles';
 
@@ -15,6 +18,8 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [firstName, setFistName] = useState('');
   const [lastName, setLastName] = useState('');
+  const location = useLocation<IAuthLocationState>();
+  const history = useHistory();
   const classes = useStyles();
 
   const changeFunc = (setFunction: Function) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +32,15 @@ const Signup = () => {
       password,
       firstName,
       lastName,
-     });
+    });
+    if (response.id) {
+      const loginResponse = await login({ username, password });
+      if (loginResponse.accessToken) {
+        TokenManager.set(loginResponse.accessToken)
+        const { from } = location.state || { from: { pathname: '/' } };
+        history.push(from);
+      }
+    }
   }
 
   return (

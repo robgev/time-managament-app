@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import useStyles from './styles';
 
-const Container: FunctionComponent<ILayoutProps> = ({ 
+const Layout: FunctionComponent<ILayoutProps> = ({ 
   className, 
   ...rest
 }) => {
@@ -15,4 +15,4 @@ const Container: FunctionComponent<ILayoutProps> = ({
   )
 }
 
-export default Container;
+export default Layout;

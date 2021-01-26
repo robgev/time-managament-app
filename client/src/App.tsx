@@ -6,6 +6,8 @@ import {
 } from 'react-router-dom';
 import ThemeProvider from '@material-ui/styles/ThemeProvider';
 
+import AuthorizedRoute from 'components/AuthorizedRoute';
+
 import Login from 'pages/Login';
 import Signup from 'pages/Signup';
 import theme from 'utils/theme';
@@ -18,7 +20,7 @@ const App = () => {
         <Switch>
           <Route path="/login" component={Login} />
           <Route path="/register" component={Signup} />
-          <Route path="/" component={Login} />
+          <AuthorizedRoute exact path="/" component={() => <h1>Welcome to the system</h1>} />
         </Switch>
       </Router>
     </ThemeProvider>

@@ -5,6 +5,8 @@ export const set = (token: string) => {
 
 export const get = () => localStorage.getItem('sessionToken');
 
+export const hasToken = () => Boolean(get())
+
 export const remove = () => {
   localStorage.removeItem('sessionToken');
 }
