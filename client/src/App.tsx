@@ -10,6 +10,7 @@ import AuthorizedRoute from 'components/AuthorizedRoute';
 
 import Login from 'pages/Login';
 import Signup from 'pages/Signup';
+import Tasks from 'pages/Tasks';
 import theme from 'utils/theme';
 
 
@@ -20,7 +21,7 @@ const App = () => {
         <Switch>
           <Route path="/login" component={Login} />
           <Route path="/register" component={Signup} />
-          <AuthorizedRoute exact path="/" component={() => <h1>Welcome to the system</h1>} />
+          <AuthorizedRoute exact path="/" component={Tasks} />
         </Switch>
       </Router>
     </ThemeProvider>
