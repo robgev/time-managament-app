@@ -28,7 +28,14 @@ router.delete('/delete/:id', authenticateToken, canEditTask, async (req: Request
 });
 
 router.get('/', authenticateToken, async (req: Request, res: Response) => {
-  const tasks = await TaskController.getAllByUserId(res.locals.user.id);
+  const { skip = 0, take = 20 } = req.query;
+  const parsedSkip = parseInt(skip.toString(), 10);
+  const parsedTake = parseInt(take.toString(), 10);
+  const tasks = await TaskController.getAllByUserId(
+    res.locals.user.id,
+    parsedSkip,
+    parsedTake,
+  );
   res.json(tasks);
 });
 

@@ -9,7 +9,7 @@ export default (err: SyntheticError, req: Request, res: Response, next: NextFunc
     res
       .status(err.status)
       .json({
-        code,
+        errorCode: code,
         message,
         errors,
       });
@@ -17,7 +17,7 @@ export default (err: SyntheticError, req: Request, res: Response, next: NextFunc
     // All non-synthetic errors
     console.error(err); // For debugging purposes
     res.status(500).json({
-      code: 'Unknown',
+      errorCode: 'Unknown',
       message: 'Something went wrong...',
       error: err,
     });

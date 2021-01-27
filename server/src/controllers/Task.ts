@@ -27,16 +27,19 @@ export const remove = async (id: number) => {
   await TaskRepo.delete(id);
 };
 
-export const getAllByUserId = async (id: number) => {
+export const getAllByUserId = async (
+  id: number,
+  skip: number,
+  take: number,
+) => {
   // TODO: Handle invalid ids
   const TaskRepo = getManager().getRepository(Task);
-  const tasks = await TaskRepo.find({
-    relations: ['byUser'],
-    where: {
-      byUser: { id },
-      // workedWhen: Between('2020-01-19T07:20:38.303Z', '2021-01-21T07:20:38.303Z'),
-    },
-  });
+  const tasks = await TaskRepo
+    .createQueryBuilder('task')
+    .where('task.byUserId = :id', { id })
+    .skip(skip)
+    .take(take)
+    .getMany();
 
   return tasks;
 };

@@ -26,7 +26,7 @@ export class User {
     @Column({ length: 25 })
     username: string;
 
-    @Column()
+    @Column({ select: false })
     password: string;
 
     @Column({ nullable: true })
