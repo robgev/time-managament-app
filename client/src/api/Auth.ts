@@ -20,3 +20,12 @@ export const login = async ({ username, password }: ICredentials) => {
 
   return response;
 }
+
+export const getUserInfo = async () => {
+  const response = await Request.createAuthorized({
+    route: 'auth/user',
+    method: 'GET',
+  })
+
+  return response;
+}

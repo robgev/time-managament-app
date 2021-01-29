@@ -34,7 +34,7 @@ const Bar = () => {
   }
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
         <Toolbar>
           <SvgIcon 
             fontSize="large"

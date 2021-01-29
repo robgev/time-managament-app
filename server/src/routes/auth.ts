@@ -4,6 +4,8 @@ import express, { Request, Response } from 'express';
 
 import * as UserController from '../controllers/User';
 import * as AuthController from '../controllers/Auth';
+import authenticateToken from '../middlewares/authenticateToken';
+import { Unauthorized } from '../utils/errors/Unathorized';
 
 const router = express.Router();
 
@@ -25,6 +27,15 @@ router.post('/register', async (req: Request, res: Response) => {
     username, password, firstName, lastName,
   });
   res.status(201).send(user);
+});
+
+router.get('/user', authenticateToken, async (req: Request, res: Response) => {
+  const { user } = res.locals;
+  if (!user) {
+    throw new Unauthorized();
+  }
+  const response = await UserController.getUser(res.locals.user.id);
+  res.json(response);
 });
 
 export default router;

@@ -29,10 +29,11 @@ export const canEditTask = async (req: Request, res: Response, next: NextFunctio
   next();
 };
 
-export const isUserManager = (req: Request, res: Response, next: NextFunction) => {
+export const canManageUser = (req: Request, res: Response, next: NextFunction) => {
   // We have 3 roles. All except the normal
   // user are user managers
-  if (res.locals.user.role === UserRole.USER) {
+  const id = parseInt(req.params.id, 10);
+  if (res.locals.user.role === UserRole.USER && res.locals.user.id !== id) {
     throw new Forbidden();
   }
   next();

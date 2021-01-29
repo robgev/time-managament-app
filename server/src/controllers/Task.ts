@@ -1,4 +1,5 @@
 import { getManager } from 'typeorm';
+import { SelectQueryBuilder } from 'typeorm/query-builder/SelectQueryBuilder';
 import { Task } from '../entities/Task';
 import { ITask } from '../utils/types/Task';
 
@@ -27,6 +28,34 @@ export const remove = async (id: number) => {
   await TaskRepo.delete(id);
 };
 
+const getWorkTimesOfPageDates = async (taskQueryBuilder: SelectQueryBuilder<Task>) => {
+  const TaskRepo = getManager().getRepository(Task);
+
+  const subQuery = taskQueryBuilder
+    .select('task.workedWhen', 'workedWhen')
+    .distinct(true);
+  // We need another fresh query which will take the
+  // dates of the paginated items and select from the
+  // whole table all the items that have the dates in
+  // this page. Then, we will aggregate the hours of current
+  // dates, no matter how many of those appear on the page
+  const rawData = await TaskRepo.createQueryBuilder('task')
+    .where(`task.workedWhen IN (${subQuery.getQuery()})`)
+    .select('task.workedWhen', 'workedWhen')
+    .addSelect('SUM(task.duration)', 'totalHours')
+    .groupBy('task.workedWhen')
+    .getRawMany();
+  const result = rawData.reduce(
+    (acc, { workedWhen, totalHours }) => ({
+      ...acc,
+      [new Date(workedWhen).toISOString()]: parseInt(totalHours, 10),
+    }),
+    {},
+  );
+
+  return result;
+};
+
 export const getAllByUserId = async (
   id: number,
   skip: number,
@@ -34,18 +63,14 @@ export const getAllByUserId = async (
 ) => {
   // TODO: Handle invalid ids
   const TaskRepo = getManager().getRepository(Task);
-  const tasks = await TaskRepo
-    .createQueryBuilder('task')
-    .where('task.byUserId = :id', { id })
+  const queryBuilder = TaskRepo.createQueryBuilder('task');
+  const taskQueryBuilder = queryBuilder
+    .where(`task.byUserId = ${id}`)
+    .orderBy('task.workedWhen', 'DESC')
     .skip(skip)
-    .take(take)
-    .getMany();
+    .take(take);
+  const [tasks, count] = await taskQueryBuilder.getManyAndCount();
 
-  return tasks;
-};
-
-export const getAll = async () => {
-  const TaskRepo = getManager().getRepository(Task);
-  const tasks = await TaskRepo.find();
-  return tasks;
+  const totals = await getWorkTimesOfPageDates(taskQueryBuilder);
+  return { tasks, count, totals };
 };

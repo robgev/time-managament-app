@@ -3,7 +3,7 @@ import { ICredentials } from 'types/Credentials';
 import { IUser } from 'types/User';
 
 export const create = async (credentials: ICredentials) => {
-  const response = await Request.create({
+  const response = await Request.createAuthorized({
     route: 'users/create',
     method: 'POST',
     body: credentials,
@@ -13,7 +13,7 @@ export const create = async (credentials: ICredentials) => {
 }
 
 export const get = async () => {
-  const response = await Request.create({
+  const response = await Request.createAuthorized({
     route: 'users/',
     method: 'GET',
   })
@@ -22,7 +22,7 @@ export const get = async () => {
 }
 
 export const edit = async (id: number, userData: Partial<IUser>) => {
-  const response = await Request.create({
+  const response = await Request.createAuthorized({
     route: `users/edit/${id}`,
     method: 'PATCH',
     body: userData,
@@ -33,7 +33,7 @@ export const edit = async (id: number, userData: Partial<IUser>) => {
 
 // delete is a keyword, sadly
 export const remove = async (id: number) => {
-  const response = await Request.create({
+  const response = await Request.createAuthorized({
     route: `users/delete/${id}`,
     method: 'DELETE',
   })
@@ -42,7 +42,7 @@ export const remove = async (id: number) => {
 }
 
 export const setHours = async (hours: number) => {
-  const response = await Request.create({
+  const response = await Request.createAuthorized({
     route: 'users/setHours',
     method: 'PATCH',
     body: { hours },

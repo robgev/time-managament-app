@@ -1,19 +1,19 @@
 import Request from 'utils/request';
 import { ITask } from 'types/Task';
 
-export const create = async (credentials: { username: string, password: string }) => {
-  const response = await Request.create({
+export const create = async (taskData: Partial<ITask>) => {
+  const response = await Request.createAuthorized({
     route: 'tasks/create',
     method: 'POST',
-    body: credentials,
+    body: taskData,
   })
 
   return response;
 }
 
-export const get = async () => {
-  const response = await Request.create({
-    route: 'tasks/',
+export const get = async (skip = 0, take = 20) => {
+  const response = await Request.createAuthorized({
+    route: `tasks/?skip=${skip}&take=${take}`,
     method: 'GET',
   })
 
@@ -21,7 +21,7 @@ export const get = async () => {
 }
 
 export const edit = async (id: number, taskData: Partial<ITask>) => {
-  const response = await Request.create({
+  const response = await Request.createAuthorized({
     route: `tasks/edit/${id}`,
     method: 'PATCH',
     body: taskData,
@@ -32,7 +32,7 @@ export const edit = async (id: number, taskData: Partial<ITask>) => {
 
 // delete is a keyword, sadly
 export const remove = async (id: number) => {
-  const response = await Request.create({
+  const response = await Request.createAuthorized({
     route: `tasks/delete/${id}`,
     method: 'DELETE',
   })

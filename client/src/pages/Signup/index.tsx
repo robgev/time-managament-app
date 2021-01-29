@@ -10,6 +10,7 @@ import Link from 'components/Link';
 import { IAuthLocationState } from 'components/AuthorizedRoute/types';
 import { register, login } from 'api/Auth';
 import * as TokenManager from 'utils/token';
+import Request from 'utils/request';
 
 import useStyles from './styles';
 
@@ -36,7 +37,8 @@ const Signup = () => {
     if (response.id) {
       const loginResponse = await login({ username, password });
       if (loginResponse.accessToken) {
-        TokenManager.set(loginResponse.accessToken)
+        TokenManager.set(loginResponse.accessToken);
+        Request.setAuthToken(loginResponse.accessToken)
         const { from } = location.state || { from: { pathname: '/' } };
         history.push(from);
       }

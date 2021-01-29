@@ -49,7 +49,31 @@ export const getAll = async () => {
 export const getUserByUsername = async (username: string) => {
   // TODO: Handle invalid username
   const UserRepo = getManager().getRepository(User);
-  const user = await UserRepo.findOne({ username });
+  const user = await UserRepo.findOne(
+    { username },
+    { select: ['username', 'password', 'id', 'role'] },
+  );
+  if (!user) {
+    throw new BadRequest('Invalid username');
+  }
+  return user;
+};
+
+export const getUser = async (id: number) => {
+  const UserRepo = getManager().getRepository(User);
+  const user = await UserRepo.findOne(
+    { id },
+    {
+      select: [
+        'username',
+        'id',
+        'role',
+        'firstName',
+        'lastName',
+        'preferredWorkingHoursPerDay',
+      ],
+    },
+  );
   if (!user) {
     throw new BadRequest('Invalid username');
   }

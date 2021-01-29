@@ -1,18 +1,18 @@
+import { get as getToken } from 'utils/token';
+
 interface IRequest {
   route: string;
   method?: string;
   body?: Record<string, any>;
 }
 
-interface IAuthorizedRequest extends IRequest {
-  token: string;
-}
-
 class Request {
   baseUrl: string;
+  token: string | null;
 
   constructor() {
     this.baseUrl = "http://localhost:8080";
+    this.token = getToken();
   }
 
   async _request(route: string, requestParams: RequestInit) {
@@ -29,12 +29,12 @@ class Request {
     return response
   }
 
-  async createAuthorized({ route, token, method, body = {} } : IAuthorizedRequest) {
+  async createAuthorized({ route, method, body = {} } : IRequest) {
     const response = await this._request(route, {
       method,
-      body: JSON.stringify(body),
+      ...(method !== 'GET' ? { body: JSON.stringify(body) } : {}),
       headers: {
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${this.token}`,
       },
     })
 
@@ -44,10 +44,14 @@ class Request {
   async create({ route, method, body = {} } : IRequest) {
     const response = await this._request(route, {
       method,
-      body: JSON.stringify(body),
+      ...(method !== 'GET' ? { body: JSON.stringify(body) } : {})
     })
 
     return response;
+  }
+
+  setAuthToken(token: string | null) {
+    this.token = token
   }
 }
 

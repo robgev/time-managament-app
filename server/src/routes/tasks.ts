@@ -10,7 +10,10 @@ const router = express.Router();
 
 router.post('/create', authenticateToken, canCreateTask, async (req: Request, res: Response) => {
   const { body: taskData } = req;
-  const task = await TaskController.create(taskData);
+  const task = await TaskController.create({
+    ...taskData,
+    createdAt: taskData.createdAt ? taskData.createdAt : new Date().toISOString(),
+  });
   res.json(task);
 });
 
@@ -31,12 +34,12 @@ router.get('/', authenticateToken, async (req: Request, res: Response) => {
   const { skip = 0, take = 20 } = req.query;
   const parsedSkip = parseInt(skip.toString(), 10);
   const parsedTake = parseInt(take.toString(), 10);
-  const tasks = await TaskController.getAllByUserId(
+  const result = await TaskController.getAllByUserId(
     res.locals.user.id,
     parsedSkip,
     parsedTake,
   );
-  res.json(tasks);
+  res.json(result);
 });
 
 export default router;

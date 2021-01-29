@@ -1,20 +1,20 @@
 import {
-  Dispatch,
   ReactNode, 
   Reducer,
 } from 'react';
 
 export type TComponent = typeof ReactNode;
 
+export interface ITaskData {
+  tasks: Array<Itask>
+  count: number,
+  totals: Record<string, number>
+}
+
 export type TAction = {
   type: string;
-  payload?: Array<ITask> | ITask;
+  payload?: ITaskData | ITask;
   id?: number;
-};
-
-export type TInitialState = {
-  state?: Array<ITask>;
-  dispatch?: Dispatch<TAction>;
 };
 
 export type TReducer = Reducer<any, any>;

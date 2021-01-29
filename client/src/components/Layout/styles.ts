@@ -10,6 +10,7 @@ const useStyles = makeStyles(theme => ({
     height: 'inherit',
     backgroundImage: 'url("/bg.png")',
     backgroundSize: 'cover',
+    flexDirection: 'column',
   }
 }));
 

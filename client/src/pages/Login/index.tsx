@@ -10,6 +10,7 @@ import Link from 'components/Link';
 import { IAuthLocationState } from 'components/AuthorizedRoute/types';
 import { login } from 'api/Auth';
 import * as TokenManager from 'utils/token';
+import Request from 'utils/request';
 
 import useStyles from './styles';
 
@@ -31,7 +32,9 @@ const Login = () => {
   const onLoginClick = async () => {
     const response = await login({ username, password });
     if (response.accessToken) {
-      TokenManager.set(response.accessToken)
+      const { accessToken } = response;
+      TokenManager.set(accessToken);
+      Request.setAuthToken(accessToken)
       const { from } = location.state || { from: { pathname: '/' } };
       history.push(from);
     }
@@ -66,7 +69,7 @@ const Login = () => {
         </Typography>
       </Paper>
     </Layout>
-  )
+  );
 }
 
 export default Login;
