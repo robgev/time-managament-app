@@ -11,7 +11,7 @@ export const create = async (taskData: Partial<ITask>) => {
   return response;
 }
 
-export const get = async (skip = 0, take = 20) => {
+export const get = async (skip: number = 0, take: number = 20) => {
   const response = await Request.createAuthorized({
     route: `tasks/?skip=${skip}&take=${take}`,
     method: 'GET',

@@ -3,7 +3,7 @@ import Paper from '@material-ui/core/Paper'
 import TextField from 'components/TextField';
 import AppBar from 'components/AppBar';
 import Button from 'components/Button';
-import { userStore } from 'contexts/Users';
+import { userStore } from 'contexts/CurrentUser';
 import { setHours } from 'api/Users';
 
 // import useStyles from './styles';

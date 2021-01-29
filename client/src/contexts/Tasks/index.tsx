@@ -35,10 +35,10 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
         return { tasks: [ action.payload, ...tasks ], count: count + 1, totals: newTotals };
       }
       case types.APPEND_TASKS: {
-        const { tasks, totals } = action.payload || { tasks: [], count: 0, totals: {} };
+        const { tasks, totals, count } = action.payload || { tasks: [], count: 0, totals: {} };
         return { 
+          count, 
           tasks: [...tasksData.tasks, ...tasks ], 
-          count: action.payload.count, 
           totals: { ...tasksData.totals, ...totals }
         };
       }

@@ -40,10 +40,17 @@ export const remove = async (id: number) => {
   await UserRepo.delete(id);
 };
 
-export const getAll = async () => {
+export const getAll = async (skip: number, take: number) => {
   const UserRepo = getManager().getRepository(User);
-  const allUsers = await UserRepo.find();
-  return allUsers;
+  const [users, count] = await UserRepo.findAndCount({
+    skip,
+    take,
+    order: {
+      role: 'ASC',
+      id: 'ASC',
+    },
+  });
+  return { users, count };
 };
 
 export const getUserByUsername = async (username: string) => {

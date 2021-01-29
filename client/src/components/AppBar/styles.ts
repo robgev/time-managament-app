@@ -7,6 +7,13 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  navBar: {
+    flexGrow: 1,
+    paddingLeft: 20,
+  },
+  navLink: {
+    marginRight: 20,
+  },
 }));
 
 export default useStyles;

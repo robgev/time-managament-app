@@ -6,7 +6,10 @@ import * as UserController from '../controllers/User';
 const router = express.Router();
 
 router.get('/', authenticateToken, canManageUser, async (req: Request, res: Response) => {
-  const allUsers = await UserController.getAll();
+  const { skip = 0, take = 20 } = req.query;
+  const parsedSkip = parseInt(skip.toString(), 10);
+  const parsedTake = parseInt(take.toString(), 10);
+  const allUsers = await UserController.getAll(parsedSkip, parsedTake);
   res.json(allUsers);
 });
 

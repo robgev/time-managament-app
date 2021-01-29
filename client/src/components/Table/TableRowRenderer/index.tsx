@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton'
@@ -6,7 +6,10 @@ import Edit from '@material-ui/icons/Edit';
 import DeleteForever from '@material-ui/icons/DeleteForever';
 import Done from '@material-ui/icons/Done';
 
+import { userStore } from 'contexts/CurrentUser';
 import TextField from 'components/TextField';
+
+import useStyles from './styles';
 
 const TableRowHead = ({ hasHeader, date, total }: any) => hasHeader
 ? (
@@ -33,22 +36,25 @@ const TableRowRenderer = ({
   onDeleteClick,
   toggleEditMode,
 }: any) => {
-  const labelId = `enhanced-table-checkbox-${index}`;
+  const classes = useStyles();
+  const { preferredWorkingHoursPerDay } = useContext<any>(userStore);
   const isEditing = row.id === editData.id;
+  const total = totals[row.workedWhen];
+
   if (isEditing) {
     return (
       <>
         <TableRowHead
           hasHeader={hasHeader}
           date={row.workedWhen}
-          total={totals[row.workedWhen]}
+          total={total}
         />
         <TableRow
           hover
           tabIndex={-1}
           key={row.id}
         >
-          <TableCell id={labelId}>
+          <TableCell>
             {number}
           </TableCell>
           <TableCell>
@@ -90,14 +96,15 @@ const TableRowRenderer = ({
       <TableRowHead
         hasHeader={hasHeader}
         date={row.workedWhen}
-        total={totals[row.workedWhen]}
+        total={total}
       />
       <TableRow
         hover
         tabIndex={-1}
         key={row.id}
+        className={total > preferredWorkingHoursPerDay ? classes.successful : classes.fail}
       >
-        <TableCell id={labelId}>
+        <TableCell>
           {number}
         </TableCell>
         <TableCell>{row.workedOn}</TableCell>

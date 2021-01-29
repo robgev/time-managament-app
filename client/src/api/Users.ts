@@ -12,9 +12,9 @@ export const create = async (credentials: ICredentials) => {
   return response;
 }
 
-export const get = async () => {
+export const get = async (skip: number = 0, take: number = 20) => {
   const response = await Request.createAuthorized({
-    route: 'users/',
+    route: `users/?skip=${skip}&take=${take}`,
     method: 'GET',
   })
 

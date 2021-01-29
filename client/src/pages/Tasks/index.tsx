@@ -4,7 +4,7 @@ import { withTasks, tasksStore, actions } from 'contexts/Tasks';
 import { ITask } from 'types/Task';
 import Table from 'components/Table';
 import pick from 'lodash/pick';
-import { userStore } from 'contexts/Users';
+import { userStore } from 'contexts/CurrentUser';
 
 import useStyles from './styles';
 
