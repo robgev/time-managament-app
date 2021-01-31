@@ -1,7 +1,9 @@
 import { Between, getManager } from 'typeorm';
 import { SelectQueryBuilder } from 'typeorm/query-builder/SelectQueryBuilder';
+import { formatISO9075 } from 'date-fns';
 import { Task } from '../entities/Task';
 import { ITask } from '../utils/types/Task';
+import { IFilterParams } from '../utils/types/FilterParams';
 
 export const getTaskById = async (id: number) => {
   const TaskRepo = getManager().getRepository(Task);
@@ -49,7 +51,7 @@ const getWorkTimesOfPageDates = async (taskQueryBuilder: SelectQueryBuilder<Task
   const result = rawData.reduce(
     (acc, { workedWhen, totalHours }) => ({
       ...acc,
-      [new Date(workedWhen).toISOString()]: parseInt(totalHours, 10),
+      [formatISO9075(new Date(workedWhen), { representation: 'date' })]: parseInt(totalHours, 10),
     }),
     {},
   );
@@ -59,10 +61,12 @@ const getWorkTimesOfPageDates = async (taskQueryBuilder: SelectQueryBuilder<Task
 
 export const getAllByUserId = async (
   id: number,
-  skip: number,
-  take: number,
-  from: string,
-  to: string,
+  {
+    skip,
+    take,
+    from,
+    to,
+  }: IFilterParams,
 ) => {
   // TODO: Handle invalid ids
   const TaskRepo = getManager().getRepository(Task);
@@ -80,10 +84,12 @@ export const getAllByUserId = async (
 };
 
 export const getAll = async (
-  skip: number,
-  take: number,
-  from: string,
-  to: string,
+  {
+    skip,
+    take,
+    from,
+    to,
+  }: IFilterParams,
 ) => {
   const TaskRepo = getManager().getRepository(Task);
   const [tasks, count] = await TaskRepo.findAndCount({

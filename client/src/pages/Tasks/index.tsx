@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import * as TasksManager from 'api/Tasks';
 import AppBar from 'components/AppBar';
 import { withTasks, tasksStore, actions } from 'contexts/Tasks';
 import { ITask } from 'types/Task';
@@ -36,6 +37,11 @@ const Tasks = () => {
     await actions.filterTasks(dispatch, { from, to })
   }
 
+  const onExport = async ({ take, skip, from, to }: 
+    { take: number, skip: number, from: string, to: string }) => {
+    await TasksManager.exportHTML({ from, to })
+  }
+
   return (
     <>
       <AppBar />
@@ -48,6 +54,7 @@ const Tasks = () => {
           onEdit={onEdit}
           onDelete={onDelete}
           onFilter={onFilter}
+          onExport={onExport}
           toolbarText="Tasks"
         />
       </div>

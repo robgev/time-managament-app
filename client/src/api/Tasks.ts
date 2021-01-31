@@ -1,11 +1,16 @@
 import Request from 'utils/request';
 import { ITask } from 'types/Task';
+import { formatISO9075 } from 'date-fns';
 
 export const create = async (taskData: Partial<ITask>) => {
+  const workedWhen = formatISO9075(new Date(taskData.workedWhen || ''), { representation: 'date' });
   const response = await Request.createAuthorized({
     route: 'tasks/create',
     method: 'POST',
-    body: taskData,
+    body: {
+      ...taskData,
+      workedWhen,
+    },
   })
 
   return response;
@@ -26,12 +31,13 @@ export const get = async (
 }
 
 export const edit = async (id: number, taskData: Partial<ITask>) => {
+  const workedWhen = formatISO9075(new Date(taskData.workedWhen || ''), { representation: 'date' });
   const response = await Request.createAuthorized({
     route: `tasks/edit/${id}`,
     method: 'PATCH',
     body: {
       ...taskData,
-      workedWhen: new Date(taskData.workedWhen || '').toISOString(),
+      workedWhen,
     },
   })
 
@@ -46,4 +52,25 @@ export const remove = async (id: number) => {
   })
 
   return response;
+}
+
+export const exportHTML = async ({from, to}: {from: string, to: string}) => {
+  const response = await Request.createExport({
+    route: `tasks/export?from=${from}&to=${to}`
+  })
+
+  const url = window.URL.createObjectURL(
+    new Blob([response]),
+  );
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute(
+    'download', 
+    'export.html',
+  );
+
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode?.removeChild(link);
 }

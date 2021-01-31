@@ -29,7 +29,8 @@ createConnection().then(async (connection) => {
     .use('/users', usersRouter)
     .use('/tasks', taskRouter)
     .use('/auth', authRouter)
-    .use(errorHandler);
+    .use(errorHandler)
+    .set('view engine', 'pug');
 
   // run app
   app.listen(8080, () => console.warn('App is running on port 8080'));

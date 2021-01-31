@@ -33,6 +33,7 @@ const Table = ({
   onEdit,
   onDelete,
   onFilter,
+  onExport,
   toolbarText,
   rowRenderer: Row,
 }: any) => {
@@ -94,6 +95,7 @@ const Table = ({
         <TableToolbar 
           text={toolbarText} 
           onFilter={onFilter}
+          onExport={onExport}
         />
         <TableContainer>
           <MUITable
@@ -123,8 +125,8 @@ const Table = ({
                 <TableCell>
                   <TextField
                     label="Date"
-                    type="datetime-local"
-                    value={format(new Date(addData.workedWhen), "yyyy-MM-dd'T'hh:mm")}
+                    type="date"
+                    value={format(new Date(addData.workedWhen), "yyyy-MM-dd")}
                     onChange={onAddChange('workedWhen')}
                   />
                 </TableCell>

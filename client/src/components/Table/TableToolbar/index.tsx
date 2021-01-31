@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 import MUIToolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import GetApp from '@material-ui/icons/GetApp';
 import TextField from 'components/TextField';
 import useStyles from './styles';
 
@@ -12,6 +14,7 @@ import useStyles from './styles';
 const TableToolbar = ({ 
   text,
   onFilter,
+  onExport,
 }: Record<string, any>) => {
   const classes = useStyles();
   const [dates, setDates] = useState({
@@ -25,6 +28,10 @@ const TableToolbar = ({
 
   const onFilterClick = () => {
     onFilter(dates);
+  } 
+
+  const onExportClick = () => {
+    onExport(dates);
   }
 
   return (
@@ -40,9 +47,9 @@ const TableToolbar = ({
       <TextField
         margin="dense"
         label="From"
-        type="datetime-local"
+        type="date"
         value={
-          format(new Date(dates.from), "yyyy-MM-dd'T'hh:mm")
+          format(new Date(dates.from), "yyyy-MM-dd")
         }
         onChange={onFilterChange('from')}
         className={classes.marginRight}
@@ -50,9 +57,9 @@ const TableToolbar = ({
       <TextField
         margin="dense"
         label="To"
-        type="datetime-local"
+        type="date"
         value={
-          format(new Date(dates.to), "yyyy-MM-dd'T'hh:mm")
+          format(new Date(dates.to), "yyyy-MM-dd")
         }
         onChange={onFilterChange('to')}
         className={classes.marginRight}
@@ -63,6 +70,14 @@ const TableToolbar = ({
           aria-label="filter list"
         >
           <FilterListIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Export filtered">
+        <IconButton 
+          onClick={onExportClick} 
+          aria-label="filter list"
+        >
+          <GetApp />
         </IconButton>
       </Tooltip>
     </MUIToolbar>

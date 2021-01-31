@@ -3,6 +3,7 @@ import React, {
   ReactNode, 
   useReducer 
 } from 'react';
+import { formatISO9075 } from 'date-fns';
 import * as types from './actionTypes'
 import {
   TAction,
@@ -29,9 +30,10 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
       }
       case types.ADD_TASK: {
         const { tasks, count, totals } = tasksData;
+        const workedWhen = formatISO9075(new Date(action.payload.workedWhen), { representation: 'date' })
         const newTotals = {...totals}
-        const oldTotal = newTotals[action.payload.workedWhen] || 0;
-        newTotals[action.payload.workedWhen] = oldTotal + parseInt(action.payload.duration.toString(), 10);
+        const oldTotal = newTotals[workedWhen] || 0;
+        newTotals[workedWhen] = oldTotal + parseInt(action.payload.duration.toString(), 10);
         return { tasks: [ action.payload, ...tasks ], count: count + 1, totals: newTotals };
       }
       case types.APPEND_TASKS: {

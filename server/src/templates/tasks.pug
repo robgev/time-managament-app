@@ -1,0 +1,14 @@
+doctype html
+html
+  title Export 
+body
+  each task, index in result.tasks
+    - const hasHeader = index === 0 ? true : formatKey(result.tasks[index - 1].workedWhen) !== formatKey(task.workedWhen)
+    ul
+      if hasHeader
+        li Date: #{formatDate(task.workedWhen)}
+        li Total time: #{result.totals[formatKey(task.workedWhen)]}h
+        li Notes:
+      ul
+        li #{task.workedOn}
+

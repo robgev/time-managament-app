@@ -50,6 +50,19 @@ class Request {
     return response;
   }
 
+  async createExport({ route } : IRequest) {
+    const request = await fetch(`${this.baseUrl}/${route}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        authorization: `Bearer ${this.token}`,
+      }
+    });
+    const response = await request.blob();
+
+    return response
+  }
+
   setAuthToken(token: string | null) {
     this.token = token
   }

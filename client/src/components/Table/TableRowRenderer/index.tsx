@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { format } from 'date-fns';
+import { format, formatISO9075 } from 'date-fns';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton'
@@ -41,7 +41,8 @@ const TableRowRenderer = ({
   const classes = useStyles();
   const { preferredWorkingHoursPerDay, role } = useContext<any>(userStore);
   const isEditing = row.id === editData.id;
-  const total = totals[row.workedWhen];
+  const workedWhen = formatISO9075(new Date(row.workedWhen), { representation: 'date' });
+  const total = totals[workedWhen];
 
   if (isEditing) {
     return (
@@ -72,9 +73,9 @@ const TableRowRenderer = ({
           <TableCell>
             <TextField
               label="Date"
-              type="datetime-local"
+              type="date"
               value={
-                format(new Date(editData.workedWhen), "yyyy-MM-dd'T'hh:mm")
+                format(new Date(editData.workedWhen), "yyyy-MM-dd")
               }
               onChange={onEditChange('workedWhen')}
             />
@@ -121,7 +122,7 @@ const TableRowRenderer = ({
           {number}
         </TableCell>
         <TableCell>{row.workedOn}</TableCell>
-        <TableCell>{format(new Date(row.workedWhen), 'MMM dd yyyy, hh:mm')}</TableCell>
+        <TableCell>{format(new Date(row.workedWhen), 'MMM dd yyyy')}</TableCell>
         <TableCell>{row.duration}</TableCell>
         <TableCell>
           <IconButton onClick={toggleEditMode(row)}>
