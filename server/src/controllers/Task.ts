@@ -1,6 +1,6 @@
 import { Between, getManager } from 'typeorm';
 import { SelectQueryBuilder } from 'typeorm/query-builder/SelectQueryBuilder';
-import { formatISO9075 } from 'date-fns';
+import { formatKey } from '../utils/dates';
 import { Task } from '../entities/Task';
 import { ITask } from '../utils/types/Task';
 import { IFilterParams } from '../utils/types/FilterParams';
@@ -51,7 +51,7 @@ const getWorkTimesOfPageDates = async (taskQueryBuilder: SelectQueryBuilder<Task
   const result = rawData.reduce(
     (acc, { workedWhen, totalHours }) => ({
       ...acc,
-      [formatISO9075(new Date(workedWhen), { representation: 'date' })]: parseInt(totalHours, 10),
+      [formatKey(workedWhen)]: parseInt(totalHours, 10),
     }),
     {},
   );

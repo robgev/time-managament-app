@@ -1,8 +1,9 @@
 import express, { Response, Request } from 'express';
 import pug from 'pug';
-import { format, formatISO9075 } from 'date-fns';
+import { format } from 'date-fns';
 
 import parseQuery from '../utils/parseQuery';
+import { formatKey } from '../utils/dates';
 import * as TaskController from '../controllers/Task';
 import { UserRole } from '../entities/User';
 import authenticateToken from '../middlewares/authenticateToken';
@@ -15,7 +16,7 @@ const router = express.Router();
 
 router.post('/create', authenticateToken, canCreateTask, async (req: Request, res: Response) => {
   const { body: taskData } = req;
-  const workedWhen = formatISO9075(new Date(taskData.workedWhen || ''), { representation: 'date' });
+  const workedWhen = formatKey(taskData.workedWhen);
   const task = await TaskController.create({
     ...taskData,
     workedWhen,
@@ -27,7 +28,7 @@ router.post('/create', authenticateToken, canCreateTask, async (req: Request, re
 router.patch('/edit/:id', authenticateToken, canEditTask, async (req: Request, res: Response) => {
   const { body: updatedTask } = req;
   const id = parseInt(req.params.id, 10);
-  const workedWhen = formatISO9075(new Date(updatedTask.workedWhen || ''), { representation: 'date' });
+  const workedWhen = formatKey(updatedTask.workedWhen);
   await TaskController.edit(id, {
     ...updatedTask,
     workedWhen,
@@ -59,7 +60,6 @@ router.get('/export', authenticateToken, async (req: Request, res: Response) => 
   const parsedQuery = parseQuery(req.query);
   const compiledFunc = pug.compileFile('src/templates/tasks.pug');
   const formatDate = (date: string) => format(new Date(date), 'yyyy.MM.dd');
-  const formatKey = (date: string) => formatISO9075(new Date(date), { representation: 'date' });
   if (res.locals.user.role !== UserRole.ADMIN) {
     const result = await TaskController.getAllByUserId(
       res.locals.user.id,

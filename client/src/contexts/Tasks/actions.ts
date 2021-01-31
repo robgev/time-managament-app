@@ -3,6 +3,7 @@ import * as TasksManager from 'api/Tasks';
 import { ITask } from 'types/Task';
 import { TAction, ITaskData } from './types';
 import * as types from './actionTypes';
+import { formatKey } from 'utils/dates';
 
 export const add = async (
   dispatch: Dispatch<TAction>,
@@ -68,13 +69,13 @@ export const edit = async (
     const updatedTasks = tasks.map(
       (currentItem: ITask) => {
         if (currentItem.id === id) {
-          const key = currentItem.workedWhen.toString();
+          const key = formatKey(currentItem.workedWhen);
           newTotals[key] -= currentItem.duration;
         }
         return currentItem.id !== id ? currentItem : {...currentItem, ...edits}
       }
     )
-    const newDateKey = edits.workedWhen.toString();
+    const newDateKey = formatKey(edits.workedWhen);
     newTotals[newDateKey] += parseInt(edits.duration.toString(), 10);
      
     dispatch({
@@ -91,7 +92,7 @@ export const remove = async (dispatch: Dispatch<TAction>, data: ITaskData, id: n
     const newTotals = { ...totals };
     const updatedTasks = tasks.filter((currentItem: ITask) => {
         if (currentItem.id === id) {
-          const key = currentItem.workedWhen.toString();
+          const key = formatKey(currentItem.workedWhen);
           newTotals[key] -= currentItem.duration;
         }
         return currentItem.id !== id

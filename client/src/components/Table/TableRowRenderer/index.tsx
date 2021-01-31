@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { format, formatISO9075 } from 'date-fns';
+import { format } from 'date-fns';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton'
@@ -7,6 +7,7 @@ import Edit from '@material-ui/icons/Edit';
 import DeleteForever from '@material-ui/icons/DeleteForever';
 import Done from '@material-ui/icons/Done';
 
+import { formatKey } from 'utils/dates';
 import { userStore } from 'contexts/CurrentUser';
 import { UserRole } from 'types/User.d';
 import TextField from 'components/TextField';
@@ -41,7 +42,7 @@ const TableRowRenderer = ({
   const classes = useStyles();
   const { preferredWorkingHoursPerDay, role } = useContext<any>(userStore);
   const isEditing = row.id === editData.id;
-  const workedWhen = formatISO9075(new Date(row.workedWhen), { representation: 'date' });
+  const workedWhen = formatKey(row.workedWhen);
   const total = totals[workedWhen];
 
   if (isEditing) {

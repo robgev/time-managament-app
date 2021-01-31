@@ -1,9 +1,9 @@
 import Request from 'utils/request';
 import { ITask } from 'types/Task';
-import { formatISO9075 } from 'date-fns';
+import { formatKey } from 'utils/dates';
 
 export const create = async (taskData: Partial<ITask>) => {
-  const workedWhen = formatISO9075(new Date(taskData.workedWhen || ''), { representation: 'date' });
+  const workedWhen = formatKey(taskData.workedWhen);
   const response = await Request.createAuthorized({
     route: 'tasks/create',
     method: 'POST',
@@ -31,7 +31,7 @@ export const get = async (
 }
 
 export const edit = async (id: number, taskData: Partial<ITask>) => {
-  const workedWhen = formatISO9075(new Date(taskData.workedWhen || ''), { representation: 'date' });
+  const workedWhen = formatKey(taskData.workedWhen);
   const response = await Request.createAuthorized({
     route: `tasks/edit/${id}`,
     method: 'PATCH',

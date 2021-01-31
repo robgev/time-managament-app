@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton'
 import Add from '@material-ui/icons/Add';
 
+import { isSameDate } from 'utils/dates';
 import TextField from 'components/TextField';
 import { ITask } from 'types/Task';
 import TableToolbar from './TableToolbar'
@@ -146,21 +147,26 @@ const Table = ({
               </TableRow>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row: any, index: number, array: ITask[]) => (
-                  <TableRowRenderer
-                    row={row}
-                    key={row.id}
-                    index={index}
-                    totals={totals}
-                    editData={editData}
-                    onEditClick={onEditClick}
-                    onEditChange={onEditChange}
-                    onDeleteClick={onDeleteClick}
-                    toggleEditMode={toggleEditMode}
-                    number={page * rowsPerPage + index + 1}
-                    hasHeader={index === 0 ? true : array[index - 1].workedWhen !== row.workedWhen}
-                  />
-                ))
+                .map((row: any, index: number, array: ITask[]) => {
+                  const hasHeader = index === 0 
+                    ? true 
+                    : !isSameDate(array[index - 1].workedWhen, row.workedWhen)
+                  return (
+                    <TableRowRenderer
+                      row={row}
+                      key={row.id}
+                      index={index}
+                      totals={totals}
+                      editData={editData}
+                      onEditClick={onEditClick}
+                      onEditChange={onEditChange}
+                      onDeleteClick={onDeleteClick}
+                      toggleEditMode={toggleEditMode}
+                      number={page * rowsPerPage + index + 1}
+                      hasHeader={hasHeader}
+                    />
+                  )
+                })
               }
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>

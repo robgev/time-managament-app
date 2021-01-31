@@ -2,7 +2,7 @@ export interface ITask {
   id: number;
   createdAt: Date;
   workedOn: string;
-  workedWhen: Date;
+  workedWhen: string;
   duration: number,
   byUser: number,
 }
