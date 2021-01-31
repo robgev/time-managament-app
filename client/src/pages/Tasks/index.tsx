@@ -7,10 +7,7 @@ import Table from 'components/Table';
 import pick from 'lodash/pick';
 import { userStore } from 'contexts/CurrentUser';
 
-import useStyles from './styles';
-
 const Tasks = () => {
-  // const classes = useStyles();
   const { tasksData, dispatch } = useContext<any>(tasksStore);
   const { userData: { id } } = useContext<any>(userStore);
   useEffect(() => {

@@ -20,18 +20,18 @@ import { UserRole } from 'types/User.d'
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
-      <UserProvider>
         <Router>
           <Switch>
             <Route path="/login" component={Login} />
             <Route path="/register" component={Signup} />
-            <AuthorizedRoute path="/profile" component={Profile} />
-            <AuthorizedRoute path="/tasks" component={Tasks} />
-            <AuthorizedRoute path="/users" component={Users} minRole={UserRole.MANAGER} />
-            <AuthorizedRoute exact path="/" component={Tasks} />
+            <UserProvider>
+              <AuthorizedRoute path="/profile" component={Profile} />
+              <AuthorizedRoute path="/tasks" component={Tasks} />
+              <AuthorizedRoute path="/users" component={Users} minRole={UserRole.MANAGER} />
+              <AuthorizedRoute exact path="/" component={Tasks} />
+            </UserProvider>
           </Switch>
         </Router>
-      </UserProvider>
     </ThemeProvider>
   );
 }
