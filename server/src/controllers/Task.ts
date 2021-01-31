@@ -1,4 +1,4 @@
-import { getManager } from 'typeorm';
+import { Between, getManager } from 'typeorm';
 import { SelectQueryBuilder } from 'typeorm/query-builder/SelectQueryBuilder';
 import { Task } from '../entities/Task';
 import { ITask } from '../utils/types/Task';
@@ -28,7 +28,7 @@ export const remove = async (id: number) => {
   await TaskRepo.delete(id);
 };
 
-const getWorkTimesOfPageDates = async (taskQueryBuilder: SelectQueryBuilder<Task>) => {
+const getWorkTimesOfPageDates = async (taskQueryBuilder: SelectQueryBuilder<Task>, id: number) => {
   const TaskRepo = getManager().getRepository(Task);
 
   const subQuery = taskQueryBuilder
@@ -41,6 +41,7 @@ const getWorkTimesOfPageDates = async (taskQueryBuilder: SelectQueryBuilder<Task
   // dates, no matter how many of those appear on the page
   const rawData = await TaskRepo.createQueryBuilder('task')
     .where(`task.workedWhen IN (${subQuery.getQuery()})`)
+    .andWhere(`task.byUserId = ${id}`)
     .select('task.workedWhen', 'workedWhen')
     .addSelect('SUM(task.duration)', 'totalHours')
     .groupBy('task.workedWhen')
@@ -60,17 +61,39 @@ export const getAllByUserId = async (
   id: number,
   skip: number,
   take: number,
+  from: string,
+  to: string,
 ) => {
   // TODO: Handle invalid ids
   const TaskRepo = getManager().getRepository(Task);
   const queryBuilder = TaskRepo.createQueryBuilder('task');
   const taskQueryBuilder = queryBuilder
     .where(`task.byUserId = ${id}`)
+    .andWhere(`task.workedWhen BETWEEN '${from}' AND '${to}'`)
     .orderBy('task.workedWhen', 'DESC')
     .skip(skip)
     .take(take);
   const [tasks, count] = await taskQueryBuilder.getManyAndCount();
 
-  const totals = await getWorkTimesOfPageDates(taskQueryBuilder);
+  const totals = await getWorkTimesOfPageDates(taskQueryBuilder, id);
+  return { tasks, count, totals };
+};
+
+export const getAll = async (
+  skip: number,
+  take: number,
+  from: string,
+  to: string,
+) => {
+  const TaskRepo = getManager().getRepository(Task);
+  const [tasks, count] = await TaskRepo.findAndCount({
+    skip,
+    take,
+    relations: ['byUser'],
+    where: {
+      workedWhen: Between(from, to),
+    },
+  });
+  const totals = {};
   return { tasks, count, totals };
 };

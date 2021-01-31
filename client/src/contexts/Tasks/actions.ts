@@ -21,13 +21,35 @@ export const add = async (
 
 export const getAll = async (
   dispatch: Dispatch<TAction>,
-  skip: number,
-  take: number,
+  {
+    skip = 0,
+    take = 20, 
+    from = '',
+    to = '',
+  }: { skip?: number, take?: number, from?: string, to?: string}
 ) => {
-  const response = await TasksManager.get(skip, take);
+  const response = await TasksManager.get(skip, take, from, to);
   if (!response.errorCode) {
     dispatch({
       type: types.APPEND_TASKS,
+      payload: response,
+    })
+  }
+}
+
+export const filterTasks = async (
+  dispatch: Dispatch<TAction>,
+  {
+    skip = 0,
+    take = 20, 
+    from = '',
+    to = '',
+  }: { skip?: number, take?: number, from?: string, to?: string}
+) => {
+  const response = await TasksManager.get(skip, take, from, to);
+  if (!response.errorCode) {
+    dispatch({
+      type: types.SET_TASKS,
       payload: response,
     })
   }

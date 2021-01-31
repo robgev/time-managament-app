@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { format } from 'date-fns';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton'
@@ -7,6 +8,7 @@ import DeleteForever from '@material-ui/icons/DeleteForever';
 import Done from '@material-ui/icons/Done';
 
 import { userStore } from 'contexts/CurrentUser';
+import { UserRole } from 'types/User.d';
 import TextField from 'components/TextField';
 
 import useStyles from './styles';
@@ -37,18 +39,20 @@ const TableRowRenderer = ({
   toggleEditMode,
 }: any) => {
   const classes = useStyles();
-  const { preferredWorkingHoursPerDay } = useContext<any>(userStore);
+  const { preferredWorkingHoursPerDay, role } = useContext<any>(userStore);
   const isEditing = row.id === editData.id;
   const total = totals[row.workedWhen];
 
   if (isEditing) {
     return (
       <>
-        <TableRowHead
-          hasHeader={hasHeader}
-          date={row.workedWhen}
-          total={total}
-        />
+        { role === UserRole.USER && (
+          <TableRowHead
+            hasHeader={hasHeader}
+            date={format(new Date(row.workedWhen), 'MMM dd yyyy')}
+            total={total}
+          />
+        )}
         <TableRow
           hover
           tabIndex={-1}
@@ -67,16 +71,18 @@ const TableRowRenderer = ({
           </TableCell>
           <TableCell>
             <TextField
-              type="text"
               label="Date"
-              value={editData.workedWhen}
+              type="datetime-local"
+              value={
+                format(new Date(editData.workedWhen), "yyyy-MM-dd'T'hh:mm")
+              }
               onChange={onEditChange('workedWhen')}
             />
           </TableCell>
           <TableCell>
             <TextField
               type="number"
-              label="Date"
+              label="Duration"
               value={editData.duration}
               onChange={onEditChange('duration')}
             />
@@ -93,22 +99,29 @@ const TableRowRenderer = ({
 
   return (
     <>
-      <TableRowHead
-        hasHeader={hasHeader}
-        date={row.workedWhen}
-        total={total}
-      />
+      { role === UserRole.USER && (
+        <TableRowHead
+          hasHeader={hasHeader}
+          date={format(new Date(row.workedWhen), 'MMM dd yyyy')}
+          total={total}
+        />
+      )}
       <TableRow
         hover
         tabIndex={-1}
         key={row.id}
-        className={total > preferredWorkingHoursPerDay ? classes.successful : classes.fail}
+        {...(role === UserRole.USER
+          ? {
+            className: total > preferredWorkingHoursPerDay ? classes.successful : classes.fail
+          }
+          : {}
+        )}
       >
         <TableCell>
           {number}
         </TableCell>
         <TableCell>{row.workedOn}</TableCell>
-        <TableCell>{row.workedWhen}</TableCell>
+        <TableCell>{format(new Date(row.workedWhen), 'MMM dd yyyy, hh:mm')}</TableCell>
         <TableCell>{row.duration}</TableCell>
         <TableCell>
           <IconButton onClick={toggleEditMode(row)}>

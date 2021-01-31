@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { format } from 'date-fns';
 import MUITable from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -31,6 +32,7 @@ const Table = ({
   totals,
   onEdit,
   onDelete,
+  onFilter,
   toolbarText,
   rowRenderer: Row,
 }: any) => {
@@ -39,7 +41,7 @@ const Table = ({
   const [editData, setEditData] = useState({ id: 0 });
   const [addData, setAddData] = useState({
     workedOn: '',
-    workedWhen: '',
+    workedWhen: new Date().toISOString(),
     duration: '',
   });
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -79,7 +81,7 @@ const Table = ({
     onAdd(addData);
     setAddData({
       workedOn: '',
-      workedWhen: '',
+      workedWhen: new Date().toISOString(),
       duration: '',
     })
   }
@@ -89,7 +91,10 @@ const Table = ({
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableToolbar text={toolbarText} />
+        <TableToolbar 
+          text={toolbarText} 
+          onFilter={onFilter}
+        />
         <TableContainer>
           <MUITable
             className={classes.table}
@@ -117,9 +122,9 @@ const Table = ({
                 </TableCell>
                 <TableCell>
                   <TextField
-                    type="text"
                     label="Date"
-                    value={addData.workedWhen}
+                    type="datetime-local"
+                    value={format(new Date(addData.workedWhen), "yyyy-MM-dd'T'hh:mm")}
                     onChange={onAddChange('workedWhen')}
                   />
                 </TableCell>

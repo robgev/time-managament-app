@@ -11,9 +11,14 @@ export const create = async (taskData: Partial<ITask>) => {
   return response;
 }
 
-export const get = async (skip: number = 0, take: number = 20) => {
+export const get = async (
+  skip: number = 0, 
+  take: number = 20,
+  from: string = '',
+  to: string = '',
+) => {
   const response = await Request.createAuthorized({
-    route: `tasks/?skip=${skip}&take=${take}`,
+    route: `tasks/?skip=${skip}&take=${take}&from=${from}&to=${to}`,
     method: 'GET',
   })
 
@@ -24,7 +29,10 @@ export const edit = async (id: number, taskData: Partial<ITask>) => {
   const response = await Request.createAuthorized({
     route: `tasks/edit/${id}`,
     method: 'PATCH',
-    body: taskData,
+    body: {
+      ...taskData,
+      workedWhen: new Date(taskData.workedWhen || '').toISOString(),
+    },
   })
 
   return response;

@@ -29,6 +29,18 @@ export const canEditTask = async (req: Request, res: Response, next: NextFunctio
   next();
 };
 
+export const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  const { user } = res.locals;
+  if (!user) {
+    throw new Unauthorized();
+  }
+  if (user.role !== UserRole.ADMIN) {
+    throw new Forbidden();
+  }
+
+  next();
+};
+
 export const canManageUser = (req: Request, res: Response, next: NextFunction) => {
   // We have 3 roles. All except the normal
   // user are user managers

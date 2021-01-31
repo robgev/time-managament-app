@@ -30,8 +30,8 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
       case types.ADD_TASK: {
         const { tasks, count, totals } = tasksData;
         const newTotals = {...totals}
-        newTotals[action.payload.workedWhen] += parseInt(action.payload.duration.toString(), 10);
-        
+        const oldTotal = newTotals[action.payload.workedWhen] || 0;
+        newTotals[action.payload.workedWhen] = oldTotal + parseInt(action.payload.duration.toString(), 10);
         return { tasks: [ action.payload, ...tasks ], count: count + 1, totals: newTotals };
       }
       case types.APPEND_TASKS: {

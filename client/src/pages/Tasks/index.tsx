@@ -14,7 +14,7 @@ const Tasks = () => {
   const { id } = useContext<any>(userStore);
   useEffect(() => {
     const fetchData = async () => {
-      await actions.getAll(dispatch, 0, 20);
+      await actions.getAll(dispatch, {});
     }
     fetchData();
   }, [dispatch])
@@ -32,6 +32,10 @@ const Tasks = () => {
     await actions.remove(dispatch, tasksData, id);
   }
 
+  const onFilter = async ({from, to}: {from: string, to: string}) => {
+    await actions.filterTasks(dispatch, { from, to })
+  }
+
   return (
     <>
       <AppBar />
@@ -43,6 +47,8 @@ const Tasks = () => {
           onAdd={onAdd}
           onEdit={onEdit}
           onDelete={onDelete}
+          onFilter={onFilter}
+          toolbarText="Tasks"
         />
       </div>
     </>
