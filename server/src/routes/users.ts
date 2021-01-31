@@ -32,7 +32,7 @@ router.delete('/delete/:id', authenticateToken, canManageUser, async (req: Reque
   res.json({ response: 'Deleted successfully' });
 });
 
-router.patch('/setHours', authenticateToken, canManageUser, async (req: Request, res: Response) => {
+router.patch('/setHours/:id', authenticateToken, canManageUser, async (req: Request, res: Response) => {
   const { hours } = req.body;
 
   await UserController.edit(res.locals.user.id, { preferredWorkingHoursPerDay: hours });

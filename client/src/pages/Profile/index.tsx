@@ -6,11 +6,9 @@ import Button from 'components/Button';
 import { userStore } from 'contexts/CurrentUser';
 import { setHours } from 'api/Users';
 
-// import useStyles from './styles';
-
-const Tasks = () => {
-  // const classes = useStyles();
+const Profile = () => {
   const {
+    id = '',
     role = '',
     lastName = '', 
     username = '', 
@@ -29,7 +27,7 @@ const Tasks = () => {
 
   const onSaveClick = async () => {
     const parsedHours = parseInt(hours, 10);
-    const { response } = await setHours(parsedHours);
+    const { response } = await setHours(parsedHours, id);
     if (!response) {
       _setHours(preferredWorkingHoursPerDay)
     }
@@ -95,4 +93,4 @@ const Tasks = () => {
   )
 }
 
-export default Tasks;
+export default Profile;

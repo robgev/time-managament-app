@@ -41,9 +41,9 @@ export const remove = async (id: number) => {
   return response;
 }
 
-export const setHours = async (hours: number) => {
+export const setHours = async (hours: number, id: number) => {
   const response = await Request.createAuthorized({
-    route: 'users/setHours',
+    route: `users/setHours/${id}`,
     method: 'PATCH',
     body: { hours },
   })
