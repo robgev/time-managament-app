@@ -49,7 +49,7 @@ const TableRowRenderer = ({
   if (isEditing) {
     return (
       <>
-        { role === UserRole.USER && (
+        { role !== UserRole.ADMIN && (
           <TableRowHead
             hasHeader={hasHeader}
             date={format(new Date(row.workedWhen), 'MMM dd yyyy')}
@@ -102,7 +102,7 @@ const TableRowRenderer = ({
 
   return (
     <>
-      { role === UserRole.USER && (
+      { role !== UserRole.ADMIN && (
         <TableRowHead
           hasHeader={hasHeader}
           date={format(new Date(row.workedWhen), 'MMM dd yyyy')}
@@ -113,7 +113,7 @@ const TableRowRenderer = ({
         hover
         tabIndex={-1}
         key={row.id}
-        {...(role === UserRole.USER
+        {...(role !== UserRole.ADMIN
           ? {
             className: total > preferredWorkingHoursPerDay ? classes.successful : classes.fail
           }
