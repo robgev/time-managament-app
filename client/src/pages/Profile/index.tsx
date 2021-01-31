@@ -7,6 +7,7 @@ import { userStore } from 'contexts/CurrentUser';
 import { setHours } from 'api/Users';
 
 const Profile = () => {
+  const { userData, saveHours } = useContext<any>(userStore);
   const {
     id = '',
     role = '',
@@ -14,7 +15,7 @@ const Profile = () => {
     username = '', 
     firstName = '',
     preferredWorkingHoursPerDay = '', 
-  } = useContext<any>(userStore);
+  } = userData;
   const [hours, _setHours] = useState('');
 
   useEffect(() => {
@@ -28,8 +29,9 @@ const Profile = () => {
   const onSaveClick = async () => {
     const parsedHours = parseInt(hours, 10);
     const { response } = await setHours(parsedHours, id);
+    saveHours(parsedHours);
     if (!response) {
-      _setHours(preferredWorkingHoursPerDay)
+      _setHours(preferredWorkingHoursPerDay || '')
     }
   }
 

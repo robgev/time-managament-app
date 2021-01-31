@@ -19,7 +19,7 @@ import useStyles from './styles';
 const Bar = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<any>(null);
-  const { role } = useContext<any>(userStore);
+  const { userData: { role } } = useContext<any>(userStore);
   const history = useHistory();
   const open = Boolean(anchorEl);
 

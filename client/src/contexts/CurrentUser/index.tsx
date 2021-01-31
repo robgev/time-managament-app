@@ -18,10 +18,14 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
       setUserData(response);
     }
     fetchData();
-  }, [])
+  }, []);
+
+  const saveHours = (hours: number) => {
+    setUserData({ ...userData, preferredWorkingHoursPerDay: hours })
+  }
 
   return (
-    <Provider value={userData}>
+    <Provider value={{ saveHours, userData }}>
       {children}
     </Provider>
   )

@@ -21,7 +21,7 @@ const TableRowRenderer = ({
   onDeleteClick,
   toggleEditMode,
 }: any) => {
-  const { role, id } = useContext<any>(userStore);
+  const { userData: { role, id }} = useContext<any>(userStore);
   const isEditing = row.id === editData.id;
 
   if (isEditing) {

@@ -10,7 +10,7 @@ import { IAuthorizedRouteProps } from './types';
 import { UserRole } from 'types/User.d';
 
 const AuthorizedRoute: FunctionComponent<IAuthorizedRouteProps>  = ({ path, component: Component, minRole = UserRole.USER }) => {
-  const { role } = useContext<any>(userStore);
+  const { userData: { role } } = useContext<any>(userStore);
   return (
     <Route
       exact

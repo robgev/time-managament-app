@@ -40,7 +40,8 @@ const TableRowRenderer = ({
   toggleEditMode,
 }: any) => {
   const classes = useStyles();
-  const { preferredWorkingHoursPerDay, role } = useContext<any>(userStore);
+  const { userData } = useContext<any>(userStore);
+  const { preferredWorkingHoursPerDay, role } = userData;
   const isEditing = row.id === editData.id;
   const workedWhen = formatKey(row.workedWhen);
   const total = totals[workedWhen];

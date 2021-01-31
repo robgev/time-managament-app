@@ -12,7 +12,7 @@ import useStyles from './styles';
 const Tasks = () => {
   // const classes = useStyles();
   const { tasksData, dispatch } = useContext<any>(tasksStore);
-  const { id } = useContext<any>(userStore);
+  const { userData: { id } } = useContext<any>(userStore);
   useEffect(() => {
     const fetchData = async () => {
       await actions.getAll(dispatch, {});
