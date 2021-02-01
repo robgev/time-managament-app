@@ -35,6 +35,7 @@ const Table = ({
   onDelete,
   onFilter,
   onExport,
+  loadMore,
   toolbarText,
   rowRenderer: Row,
 }: any) => {
@@ -56,8 +57,17 @@ const Table = ({
     setAddData({ ...addData, [key]: e.target.value });
   }
 
-  const handleChangePage = (event: any, newPage: any) => {
+  const handleChangePage = async (event: any, newPage: any) => {
     setPage(newPage);
+    // If we have one page left till the end of all
+    // items loaded, load another batch
+    // items are 0 indexed, so we need + 1 + 1
+    if ((newPage + 2) * rowsPerPage >= count) {
+      // We load in batch of 20s, so 
+      // we need to calculate the real page
+      const page = ((newPage + 1) * rowsPerPage) / 20;
+      await (loadMore(page))
+    }
   };
 
   const handleChangeRowsPerPage = (event: any) => {
@@ -177,7 +187,7 @@ const Table = ({
           </MUITable>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[5, 10, 20]}
           component="div"
           count={count}
           rowsPerPage={rowsPerPage}

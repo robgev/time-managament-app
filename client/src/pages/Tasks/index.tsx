@@ -17,6 +17,10 @@ const Tasks = () => {
     fetchData();
   }, [dispatch])
 
+  const loadMore = async (page: number) => {
+    await actions.getAll(dispatch, { skip: page * 20, take: 20 }) 
+  }
+
   const onAdd = async (data: ITask) => {
     await actions.add(dispatch, { ...data, byUser: id });
   }
@@ -52,6 +56,7 @@ const Tasks = () => {
           onDelete={onDelete}
           onFilter={onFilter}
           onExport={onExport}
+          loadMore={loadMore}
           toolbarText="Tasks"
         />
       </div>
