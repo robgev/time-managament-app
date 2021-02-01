@@ -14,6 +14,10 @@ const Tasks = () => {
     fetchData();
   }, [dispatch])
 
+  const loadMore = async (page: number) => {
+    await actions.getAll(dispatch, page * 20, 20);
+  }
+
   const onAdd = async (data: ICredentials) => {
     await actions.add(dispatch, data);
   }
@@ -36,6 +40,7 @@ const Tasks = () => {
           onAdd={onAdd}
           onEdit={onEdit}
           onDelete={onDelete}
+          loadMore={loadMore}
         />
       </div>
     </>

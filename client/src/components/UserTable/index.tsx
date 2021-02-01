@@ -33,6 +33,7 @@ const Table = ({
   count,
   onAdd,
   onEdit,
+  loadMore,
   onDelete,
   toolbarText,
   rowRenderer: Row,
@@ -56,13 +57,21 @@ const Table = ({
     setAddData({ ...addData, [key]: e.target.value });
   }
 
-  const handleChangePage = (event: any, newPage: any) => {
+  const handleChangePage = async (event: any, newPage: any) => {
     setPage(newPage);
+
+    if ((newPage + 2) * rowsPerPage >= count) {
+      const page = ((newPage + 1) * rowsPerPage) / 20;
+      await (loadMore(page))
+    }
   };
 
-  const handleChangeRowsPerPage = (event: any) => {
+  const handleChangeRowsPerPage = async (event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    if (rowsPerPage >= count) {
+      await (loadMore(1))
+    }
   };
 
 

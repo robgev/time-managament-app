@@ -62,17 +62,22 @@ const Table = ({
     // If we have one page left till the end of all
     // items loaded, load another batch
     // items are 0 indexed, so we need + 1 + 1
-    if ((newPage + 2) * rowsPerPage >= count) {
+    if ((newPage + 2) * rowsPerPage >= rows.length) {
       // We load in batch of 20s, so 
       // we need to calculate the real page
-      const page = ((newPage + 1) * rowsPerPage) / 20;
+      const page = ((newPage + 2) * rowsPerPage) / 20;
       await (loadMore(page))
     }
   };
 
-  const handleChangeRowsPerPage = (event: any) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+  const handleChangeRowsPerPage = async (event: any) => {
+    const newRows = parseInt(event.target.value, 10);
+    setRowsPerPage(newRows);
     setPage(0);
+    // If one page fits all loaded items,
+    if (newRows >= rows.length) {
+      await (loadMore(1))
+    }
   };
 
 
